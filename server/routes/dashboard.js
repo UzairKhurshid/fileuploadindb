@@ -3,6 +3,7 @@ const Task = require('../models/task')
 const fileUpload = require('../models/fileupload')
 const auth = require('../middleware/auth')
 const path = require('path')
+const sharp = require('sharp')
 
 const router = new express.Router()
 
@@ -35,9 +36,9 @@ router.post('/', async(req, res) => {
 
 router.get('/fileupload', auth, async(req, res) => {
     try {
-        const email = 'umair12@gmail.com'
+        const email = req.session.email
         const user = await fileUpload.findOne({ email })
-        console.log(user)
+
         if (!user) {
             return res.render('dashboard/fileupload', {
                 title: 'Dashboard'
@@ -46,7 +47,6 @@ router.get('/fileupload', auth, async(req, res) => {
 
         res.render('dashboard/fileupload', {
             title: 'Dashboard',
-            dirName: __dirname,
             filepath: user.filepath
         })
 
@@ -60,12 +60,13 @@ router.post('/fileupload', auth, async(req, res) => {
     try {
         const name = req.body.name
         const email = req.body.email
-        const avatar = req.file
+        const buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).jpeg().toBuffer()
+
 
         const fileupload = new fileUpload()
         fileupload.name = name
         fileupload.email = email
-        fileupload.filepath = avatar.path
+        fileupload.filepath = buffer
         await fileupload.save()
         res.redirect('/fileupload')
 

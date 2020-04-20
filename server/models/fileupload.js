@@ -13,8 +13,7 @@ const fileuploadSchema = new mongoose.Schema({
         unique: true
     },
     filepath: {
-        type: String,
-        required: true
+        type: Buffer
     }
 
 });

@@ -18,14 +18,6 @@ app.use(session({
     saveUninitialized: false,
     store: dbStore
 }))
-const fileStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'avatars')
-    },
-    filename: (req, file, cb) => {
-        cb(null, 'avatars-' + file.originalname)
-    }
-})
 const fileFilter = (req, file, cb) => {
         if (file.mimetype === 'image/png' || file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg') {
             cb(null, true)
@@ -47,7 +39,7 @@ const port = process.env.PORT
 app.use(express.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use('/avatars', express.static(avatarsDirectory))
-app.use(multer({ storage: fileStorage, fileFilter: fileFilter }).single('avatar'))
+app.use(multer({ fileFilter: fileFilter }).single('avatar'))
 app.set('view engine', 'hbs')
 app.set('views', viewDirectory)
 hbs.registerPartials(partialsDirectory)

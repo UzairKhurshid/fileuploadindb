@@ -3,9 +3,8 @@
 <body>
 
     <h1>Welcome to FileUpload Page</h1>
-    <p>Dir Name :</p><span>{{dirName}}</span>
     {{#if filepath}}
-        <img src="/{{filepath}}"
+        <img ng-src="data:image/jpg:base64,{{filepath}}"
     {{/if}}
     <div class="container">
         <div class="row">
